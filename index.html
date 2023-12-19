@@ -122,12 +122,11 @@
 
           // Define color ranges based on percentage
           var fillColor;
-            if (percentage = 0) fillColor = 'clear';
-            else if (percentage = 1) fillColor = '#a7cfb5';
-            else if (percentage = 2) fillColor = '#76a881';
-            else if (percentage = 3) fillColor = '#4b8758';
-            else if (percentage = 4) fillColor = '#4b8758'; 
-            else if (percentage = 5) fillColor = 'purple';    
+            if (percentage < 1) fillColor = 'clear';
+            else if (percentage < 2) fillColor = '#76a881';
+            else if (percentage < 3) fillColor = '#4b8758';
+            else if (percentage < 4) fillColor = '#4b8758'; 
+            else if (percentage < 5) fillColor = 'purple';    
             else fillColor = '#1f6630';
 
           return {
