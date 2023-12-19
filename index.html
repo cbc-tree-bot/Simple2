@@ -1,0 +1,173 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>2022 Canopy Coverage Map</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
+
+    <style>
+      html, body, #map {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        color: #323232;
+      }
+
+      .legend {
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        width: 150px;
+      }
+
+      .legend-header {
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 5px;
+      }
+
+      .legend-item {
+        margin-bottom: 5px;
+        height: 20px;
+      }
+     
+      .legend-text {
+        margin-bottom: 10px;
+        font-size: 12px;
+        text-align: centre;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        z-index: 1000;
+        width: 265px; /* Adjust width as needed */
+        background-color: white; /* Add this line for a white background */
+        padding: 15px; /* Add padding for better aesthetics */
+        border-radius: 5px; /* Add border-radius for rounded corners */
+        border: 1px solid #ccc; /* Add border for a cleaner look */
+      }
+     
+      .legend-title {
+        font-size: 16px;
+        font-weight: bold;
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        position: absolute;
+        top: 10px;
+        left: 50px;
+        z-index: 1000;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+
+      
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="legend">
+      <div class="legend-header">Legend</div>
+
+      <div class="legend-item" style="background:#ffecbf"></div>
+      0% &ndash; 10%
+      <div class="legend-item" style="background:#a7cfb5"></div>
+      10% &ndash; 20%
+      <div class="legend-item" style="background:#76a881"></div>
+      20% &ndash; 30%
+      <div class="legend-item" style="background:#4b8758"></div>
+      30% &ndash; 40%
+      <div class="legend-item" style="background:#1f6630"></div>
+      40%+
+    </div>
+
+     <div class="legend-text">
+    Reproduced and edited under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>. <br> Canopy Coverage Data sourced from the <a href="https://datasets.seed.nsw.gov.au/dataset/urban-tree-canopy-cover-for-greater-sydney-2022" target="_blank">Greater Sydney 2022 Canopy Coverage Dataset</a>. <br> Areas shown are ABS Modified Mesh Blocks. <br>View the complete data on the <a href="https://geo.seed.nsw.gov.au/Public_Viewer/index.html?viewer=Public_Viewer&locale=en-AU&runWorkflow=AppendLayerCatalog&CatalogLayer=SEED_Catalog.344" target="_blank">SEED Portal Map</a>. 
+    </div>
+
+    <div class="legend-title">
+    CBCity 2022 Canopy Coverage
+    </div>
+
+
+
+    <script>
+      var map = L.map('map').setView([-33.928, 151.038], 15);
+
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      var selectedLayer; // Variable to store the selected layer
+
+      // Create a feature layer with color range, transparency, filter, and popup
+      var featureLayer = L.esri.featureLayer({
+        url: 'https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/UHGC/Greater_Syd_All_Veg_Canopy_Cover_2022/MapServer/0',
+        where: "EPI_NAME_1 IN ('Bankstown Local Environmental Plan 2015', 'Canterbury Local Environmental Plan 2012')", // Add the filter condition
+        style: function (feature) {
+          var percentage = feature.properties.Canopy_Percentage;
+
+          // Define color ranges based on percentage
+          var fillColor;
+          if (percentage < 10) fillColor = '#ffecbf';
+          else if (percentage < 20) fillColor = '#a7cfb5';
+          else if (percentage < 30) fillColor = '#76a881';
+          else if (percentage < 40) fillColor = '#4b8758';
+          else fillColor = '#1f6630';
+
+          return {
+            fillColor: fillColor,
+            weight: 0.7,
+            opacity: 0.7,
+            color: 'white',
+            fillOpacity: 0.7, // Set fill opacity to approximately 70%
+          };
+        },
+        onEachFeature: function (feature, layer) {
+          // Bind a popup to each feature  
+          var popupContent = `
+            <b>Canopy %:</b> ${feature.properties.Canopy_Percentage}<br>
+            <b>All Vege %:</b> ${feature.properties.All_Veg_Percentage}<br>
+            <b>0-3m Vege %:</b> ${feature.properties.F_0_3m_Percent}<br>
+            <b>3-10m Vege %:</b> ${feature.properties.F_3_10m_Percent}<br>
+            <b>10-15m Vege %:</b> ${feature.properties.F_10_15m_Percent}<br>
+            <b>>15m Vege %:</b> ${feature.properties.Greater_than_15m_Percent}<br>
+            <b>Land Zoning Code:</b> ${feature.properties.LZN_CODE}<br>
+            <b>ABS Area L2:</b> ${feature.properties.SA2_NAME16}<br>
+            <b>ABS Area L3:</b> ${feature.properties.SA3_NAME16}<br>
+            <b>Selected Area - ha:</b> ${feature.properties.area__ha_}<br>
+          `;
+          layer.bindPopup(popupContent);
+
+          // Add click event to highlight the selected layer
+          layer.on('click', function () {
+            if (selectedLayer) {
+              selectedLayer.setStyle({
+                weight: 0.7,
+                color: 'white',
+              });
+            }
+            layer.setStyle({
+              weight: 4, // Adjusted weight
+              color: 'purple', // Adjusted color
+            });
+            selectedLayer = layer;
+          });
+        },
+      }).addTo(map);
+    </script>
+  </body>
+</html>
