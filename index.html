@@ -83,15 +83,15 @@
       <div class="legend-header">Legend</div>
 
       <div class="legend-item" style="background:#ffecbf"></div>
-      0% &ndash; 10%
+      HVI - 1
       <div class="legend-item" style="background:#a7cfb5"></div>
-      10% &ndash; 20%
+      HVI -2
       <div class="legend-item" style="background:#76a881"></div>
-      20% &ndash; 30%
+      HVI -3
       <div class="legend-item" style="background:#4b8758"></div>
-      30% &ndash; 40%
+      HVI -4
       <div class="legend-item" style="background:#1f6630"></div>
-      40%+
+      HVI -5
     </div>
 
      <div class="legend-text">
@@ -99,13 +99,13 @@
     </div>
 
     <div class="legend-title">
-    CBCity 2022 Canopy Coverage
+    CBCity 2016 HVI Layer
     </div>
 
 
 
     <script>
-      var map = L.map('map').setView([-33.928, 151.038], 15);
+      var map = L.map('map').setView([-33.928, 151.038], 10);
 
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -115,17 +115,17 @@
 
       // Create a feature layer with color range, transparency, filter, and popup
       var featureLayer = L.esri.featureLayer({
-        url: 'https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/UHGC/Greater_Syd_All_Veg_Canopy_Cover_2022/MapServer/0',
-        where: "EPI_NAME_1 IN ('Bankstown Local Environmental Plan 2015', 'Canterbury Local Environmental Plan 2012')", // Add the filter condition
+        url: 'https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/UHGC/UHGC/MapServer/1',
+        where: "LGA IN ('Canterbury-Bankstown')", // Add the filter condition
         style: function (feature) {
-          var percentage = feature.properties.Canopy_Percentage;
+          var percentage = feature.properties.HVI;
 
           // Define color ranges based on percentage
           var fillColor;
-          if (percentage < 10) fillColor = '#ffecbf';
-          else if (percentage < 20) fillColor = '#a7cfb5';
-          else if (percentage < 30) fillColor = '#76a881';
-          else if (percentage < 40) fillColor = '#4b8758';
+          if (1) fillColor = '#ffecbf';
+          else if (2) fillColor = '#a7cfb5';
+          else if (3) fillColor = '#76a881';
+          else if (4) fillColor = '#4b8758';
           else fillColor = '#1f6630';
 
           return {
@@ -139,16 +139,11 @@
         onEachFeature: function (feature, layer) {
           // Bind a popup to each feature  
           var popupContent = `
-            <b>Canopy %:</b> ${feature.properties.Canopy_Percentage}<br>
-            <b>All Vege %:</b> ${feature.properties.All_Veg_Percentage}<br>
-            <b>0-3m Vege %:</b> ${feature.properties.F_0_3m_Percent}<br>
-            <b>3-10m Vege %:</b> ${feature.properties.F_3_10m_Percent}<br>
-            <b>10-15m Vege %:</b> ${feature.properties.F_10_15m_Percent}<br>
-            <b>>15m Vege %:</b> ${feature.properties.Greater_than_15m_Percent}<br>
-            <b>Land Zoning Code:</b> ${feature.properties.LZN_CODE}<br>
-            <b>ABS Area L2:</b> ${feature.properties.SA2_NAME16}<br>
-            <b>ABS Area L3:</b> ${feature.properties.SA3_NAME16}<br>
-            <b>Selected Area - ha:</b> ${feature.properties.area__ha_}<br>
+            <b>HVI :</b> ${feature.properties.HVI }<br>
+            <b>Expos_Indx :</b> ${feature.properties.Expos_Indx }<br>
+            <b>Sensi_Indx :</b> ${feature.properties.Sensi_Indx }<br>
+            <b>AdapC_Indx :</b> ${feature.properties.AdapC_Indx }<br>
+            <b>LGA :</b> ${feature.properties.LGA }<br>
           `;
           layer.bindPopup(popupContent);
 
