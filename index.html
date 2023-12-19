@@ -142,11 +142,12 @@
         onEachFeature: function (feature, layer) {
           // Bind a popup to each feature  
           var popupContent = `
-            <b>HVI :</b> ${feature.properties.HVI }<br>
-            <b>Expos_Indx :</b> ${feature.properties.Expos_Indx }<br>
-            <b>Sensi_Indx :</b> ${feature.properties.Sensi_Indx }<br>
-            <b>AdapC_Indx :</b> ${feature.properties.AdapC_Indx }<br>
+            <b>HVI:</b> ${feature.properties.HVI }<br>
+            <b>Exposure Index:</b> ${feature.properties.Expos_Indx }<br>
+            <b>Sensitivity Index:</b> ${feature.properties.Sensi_Indx }<br>
+            <b>Adaptive Capacity Index:</b> ${feature.properties.AdapC_Indx }<br>
             <b>LGA :</b> ${feature.properties.LGA }<br>
+
           `;
           layer.bindPopup(popupContent);
 
@@ -159,8 +160,8 @@
               });
             }
             layer.setStyle({
-              weight: 4, // Adjusted weight
-              color: 'purple', // Adjusted color
+              weight: 5, // Adjusted weight
+              color: 'green', // Adjusted color
             });
             selectedLayer = layer;
           });
